@@ -2,7 +2,6 @@
 #include <malloc.h>
 #include <time.h>
 
-
 typedef struct linked {
     int value;
     struct linked* pointer;
@@ -34,11 +33,20 @@ list* clear(list *last) {
     return 0;
 }
 
+int colorize(int v) {
+    if (v > 0) printf("\033[33m");
+    else printf("\033[34m");
+    return 0;
+}
+
+
 int show(list *l) {
     while (l->pointer != NULL) {
+        colorize(l->value);
         printf("%i, ", l->value);
         l = l->pointer;
     }
+    colorize(l->value);
     printf("%i\n", l->value);
     return 0;
 }
@@ -106,7 +114,7 @@ int main() {
 
     printf("Input n:");
     scanf("%i", &n);
-    if (n == 0) {
+    if (n <= 0) {
         printf("I have this one: []");
         return 0;
     }
@@ -116,7 +124,9 @@ int main() {
     }
     srand(time(NULL));
     list *list1 = create(n);
+    printf("\033[32m""List before sorting:\n");
     show(list1);
+    printf( "\033[32m""List after sorting:\n");
     list1 = sort(list1);
     show(list1);
 
