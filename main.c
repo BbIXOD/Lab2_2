@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <malloc.h>
-#include <math.h>
+#include <time.h>
 
 
 typedef struct linked {
@@ -35,7 +35,6 @@ list* clear(list *last) {
 }
 
 int show(list *l) {
-    if (l == NULL) return 1;
     while (l->pointer != NULL) {
         printf("%i, ", l->value);
         l = l->pointer;
@@ -53,20 +52,22 @@ int getSign(int x) {
 }
 
 list* create(int n) {
-    int neg = n / 2, pos = neg - 1, sign;
-    list* list1 = initList(rand() % 101);
+    int neg = n / 2, pos = neg, sign;
+    sign = randSign(); // I thought about just make first value always positive, but it decreases amount of situations
+    list* list1 = initList(sign * (rand() % 100 + 1));
+    sign > 0 ? pos-- : neg--;
     for (int i = 0; i < n - 1; i++) {
         if (neg != 0 && pos != 0) {
             sign = randSign();
-            list1 = push(sign * (rand() % 101), list1);
+            list1 = push(sign * (rand() % 100 + 1), list1);
             sign > 0 ? pos-- : neg--;
         }
         else if (neg == 0) {
-            list1 = push(rand() % 101, list1);
+            list1 = push(rand() % 100 + 1, list1);
             pos--;
         }
         else {
-            list1 = push(rand() % 101 * -1, list1);
+            list1 = push(rand() % 100 * -1 - 1, list1);
             neg--;
         }
     }
@@ -81,7 +82,7 @@ list* sort(list *l) {
     while (l->pointer != NULL) {
         if (sign == getSign(l->value)) {
             l = l->pointer;
-            sign *= -1;
+            sign = !sign;
             continue;
         }
         last = l->pointer;
@@ -91,9 +92,11 @@ list* sort(list *l) {
         int temp = last->value;
         last->value = l->value;
         l->value = temp;
+
         l = l->pointer;
-        if (l == NULL || l->pointer == NULL) break;
+        if (l->pointer == NULL) break;
         l = l->pointer;
+
     }
     return first;
 }
@@ -111,10 +114,11 @@ int main() {
         printf("How i can make array with equal amount of negative and positive numbers with this length?");
         return 0;
     }
+    srand(time(NULL));
     list *list1 = create(n);
     show(list1);
     list1 = sort(list1);
-    //show(list1);
+    show(list1);
 
 
     clear(list1);
